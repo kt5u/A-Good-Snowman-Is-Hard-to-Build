@@ -1,16 +1,36 @@
 package pt.ipbeja.app.model;
 
-public class Snowball{
+public class Snowball {
     public enum SnowballSize {
         SMALL,
         MEDIUM,
         LARGE
     }
 
-    private SnowballSize size;
+    private int row;               // Row on the board
+    private int col;               // Column on the board
+    private SnowballSize size;     // Size of the snowball
 
-    public Snowball(SnowballSize size) {
+    public Snowball(int row, int col, SnowballSize size) {
+        this.row = row;
+        this.col = col;
         this.size = size;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
     }
 
     public SnowballSize getSize() {
@@ -21,6 +41,7 @@ public class Snowball{
         this.size = size;
     }
 
+    // Grow method to increase size (if possible)
     public void grow() {
         switch (this.size) {
             case SMALL:
@@ -30,12 +51,17 @@ public class Snowball{
                 this.size = SnowballSize.LARGE;
                 break;
             case LARGE:
+                // Largest the ball can be
                 break;
         }
     }
 
     @Override
     public String toString() {
-        return "SnowballType(" + size + ")";
+        return "Snowball{" +
+                "row=" + row +
+                ", col=" + col +
+                ", size=" + size +
+                '}';
     }
 }
