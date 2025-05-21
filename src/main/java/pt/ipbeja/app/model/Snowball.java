@@ -1,6 +1,7 @@
 package pt.ipbeja.app.model;
 
 public class Snowball {
+
     public enum SnowballSize {
         SMALL,
         MEDIUM,
