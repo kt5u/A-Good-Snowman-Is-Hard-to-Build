@@ -40,8 +40,7 @@ public class Snowball {
     public void setSize(SnowballSize size) {
         this.size = size;
     }
-
-    // Grow method to increase size (if possible)
+    
     public void grow() {
         switch (this.size) {
             case SMALL:
