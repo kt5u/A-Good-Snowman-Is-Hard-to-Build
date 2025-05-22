@@ -1,28 +1,24 @@
 package pt.ipbeja.app.model;
 
-public class Monster {
+public class Monster extends MobileElement {
 
-    public enum Direction{
+    public enum Direction {
         UP,
         DOWN,
         LEFT,
         RIGHT
     }
 
-    private int row;
-    private int col;
-
-    public Monster(int row, int col){
-        this.row = row;
-        this.col = col;
+    public Monster(int row, int col) {
+        super(row, col);
     }
 
     public void move(Direction direction) {
         switch (direction) {
-            case UP:    row--; break;
-            case DOWN:  row++; break;
-            case LEFT:  col--; break;
-            case RIGHT: col++; break;
+            case UP -> row--;
+            case DOWN -> row++;
+            case LEFT -> col--;
+            case RIGHT -> col++;
         }
     }
 }
