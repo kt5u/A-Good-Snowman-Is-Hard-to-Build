@@ -1,40 +1,75 @@
 package pt.ipbeja.app.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BoardModel {
+
     private final int rows;
     private final int cols;
-    private TileModel[][] tiles;
+    private final List<List<PositionContent>> board;
 
+    /**
+     * Board Constructor
+     * @param rows número de linhas
+     * @param cols número de colunas
+     */
     public BoardModel(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
-        tiles = new TileModel[rows][cols];
+        this.board = new ArrayList<>();
 
-        // Initialize all tiles as EMPTY
         for (int r = 0; r < rows; r++) {
+            List<PositionContent> row = new ArrayList<>();
             for (int c = 0; c < cols; c++) {
-                tiles[r][c] = TileModel.EMPTY;
+                row.add(PositionContent.EMPTY); // Posição inicial vazia
             }
+            board.add(row);
         }
     }
 
-    public TileModel getTile(int row, int col) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            return null; // Or throw an exception if you prefer
+    /**
+     * Retorna o conteúdo de uma posição
+     */
+    public PositionContent getContent(int row, int col) {
+        if (!isInsideBoard(row, col)) {
+            throw new IndexOutOfBoundsException("Fora dos limites do tabuleiro.");
         }
-        return tiles[row][col];
+        return board.get(row).get(col);
     }
 
-    public void setTile(int row, int col, TileModel tile) {
-        if (row >= 0 && row < rows && col >= 0 && col < cols) {
-            tiles[row][col] = tile;
+    /**
+     * Define o conteúdo de uma posição
+     */
+    public void setContent(int row, int col, PositionContent content) {
+        if (!isInsideBoard(row, col)) {
+            throw new IndexOutOfBoundsException("Fora dos limites do tabuleiro.");
         }
+        board.get(row).set(col, content);
     }
 
+    /**
+     * Verifica se a posição está dentro dos limites do tabuleiro
+     */
+    public boolean isInsideBoard(int row, int col) {
+        return row >= 0 && row < rows && col >= 0 && col < cols;
+    }
+
+    /**
+     * Verifica se pode mover para uma posição
+     */
     public boolean canMove(int row, int col) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            return false;
-        }
-        return tiles[row][col] == TileModel.EMPTY;
+        return isInsideBoard(row, col) && board.get(row).get(col) == PositionContent.EMPTY;
+    }
+
+    /**
+     * Getters das dimensões
+     */
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
     }
 }
