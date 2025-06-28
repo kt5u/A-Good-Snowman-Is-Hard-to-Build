@@ -1,9 +1,14 @@
 package pt.ipbeja.app.model;
 
+/**
+ * Representa os tipos de conteúdo que uma posição no tabuleiro pode ter
+ * @author Denis Cicau
+ */
 public enum PositionContent {
-    EMPTY,
-    WALL,
+    NO_SNOW,
+    SNOW,
+    BLOCK,
     SNOWBALL,
-    MONSTER,
-    PLAYER
+    SNOWMAN,
+    MONSTER
 }

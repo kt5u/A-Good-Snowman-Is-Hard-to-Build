@@ -1,5 +1,7 @@
 module pt.ipbeja {
     requires javafx.controls;
-    exports pt.ipbeja.app.ui;
-
+    requires javafx.graphics;
+    requires java.desktop;
+    exports pt.ipbeja.app.gui;
+    exports pt.ipbeja.app.model;
 }

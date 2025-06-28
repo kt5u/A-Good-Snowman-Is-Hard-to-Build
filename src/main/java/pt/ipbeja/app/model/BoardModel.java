@@ -1,13 +1,21 @@
 package pt.ipbeja.app.model;
 
+import javafx.scene.Parent;
+
 import java.util.ArrayList;
 import java.util.List;
+
+/*
+ @author Denis Cicau 25442
+ @author Ângelo Teresa 25441
+*/
 
 public class BoardModel {
 
     private final int rows;
     private final int cols;
     private final List<List<PositionContent>> board;
+    private View view;
 
     /**
      * Board Constructor
@@ -22,7 +30,7 @@ public class BoardModel {
         for (int r = 0; r < rows; r++) {
             List<PositionContent> row = new ArrayList<>();
             for (int c = 0; c < cols; c++) {
-                row.add(PositionContent.EMPTY); // Posição inicial vazia
+                row.add(PositionContent.NO_SNOW); // Posição inicial vazia
             }
             board.add(row);
         }
@@ -46,6 +54,9 @@ public class BoardModel {
             throw new IndexOutOfBoundsException("Fora dos limites do tabuleiro.");
         }
         board.get(row).set(col, content);
+        if (view != null) {
+            view.onBoardChanged(row, col, content);
+        }
     }
 
     /**
@@ -59,7 +70,7 @@ public class BoardModel {
      * Verifica se pode mover para uma posição
      */
     public boolean canMove(int row, int col) {
-        return isInsideBoard(row, col) && board.get(row).get(col) == PositionContent.EMPTY;
+        return isInsideBoard(row, col) && board.get(row).get(col) == PositionContent.NO_SNOW;
     }
 
     /**
