@@ -6,6 +6,7 @@ import javafx.scene.layout.StackPane;
 import pt.ipbeja.app.model.PositionContent;
 
 public class BoardCell extends StackPane {
+    private final int SIZE = 100;
     private final ImageView background;
     private ImageView content;
     private final int row;
@@ -16,6 +17,11 @@ public class BoardCell extends StackPane {
         this.col = col;
         this.background = new ImageView();
         this.content = new ImageView();
+        setMinSize(SIZE, SIZE);
+        setMaxSize(SIZE, SIZE);
+        setPrefSize(SIZE, SIZE);
+        setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+        setFocusTraversable(false);
 
         this.getChildren().addAll(background, content);
         this.setPrefSize(50, 50);
@@ -38,16 +44,14 @@ public class BoardCell extends StackPane {
     private Image getContentImage(PositionContent content) {
         switch(content) {
             case MONSTER: return ImageUtil.MONSTER;
-            case SNOWBALL: return getSnowballImage(); // Novo método para bolas de neve
+            case SNOWBALL: return getSnowballImage();
             case SNOWMAN: return ImageUtil.SNOWMAN;
             default: return null;
         }
     }
 
     private Image getSnowballImage() {
-        // Você precisará ter acesso ao tamanho da bola de neve aqui
-        // Isso pode exigir mudanças na estrutura
-        return ImageUtil.SNOWBALL_SMALL; // Exemplo temporário
+        return ImageUtil.SNOWBALL_SMALL;
     }
 
     // Getters
