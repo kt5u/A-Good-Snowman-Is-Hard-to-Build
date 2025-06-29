@@ -1,4 +1,4 @@
-package pt.ipbeja.app.model;
+package pt.ipbeja.estig.po2.snowman.model;
 
 /**
  * Representa os tipos de conteúdo que uma posição no tabuleiro pode ter

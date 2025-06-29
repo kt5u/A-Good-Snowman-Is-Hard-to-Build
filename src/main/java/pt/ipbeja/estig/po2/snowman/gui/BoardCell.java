@@ -1,14 +1,14 @@
-package pt.ipbeja.app.gui;
+package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import pt.ipbeja.app.model.PositionContent;
+import pt.ipbeja.estig.po2.snowman.model.PositionContent;
 
 public class BoardCell extends StackPane {
     private final int SIZE = 100;
     private final ImageView background;
-    private ImageView content;
+    private final ImageView content;
     private final int row;
     private final int col;
 
@@ -17,6 +17,15 @@ public class BoardCell extends StackPane {
         this.col = col;
         this.background = new ImageView();
         this.content = new ImageView();
+
+        background.setFitWidth(SIZE);
+        background.setFitHeight(SIZE);
+        background.setPreserveRatio(false);
+
+        content.setFitWidth(SIZE);
+        content.setFitHeight(SIZE);
+        content.setPreserveRatio(false); // ou true se preferires manter proporção
+
         setMinSize(SIZE, SIZE);
         setMaxSize(SIZE, SIZE);
         setPrefSize(SIZE, SIZE);
@@ -24,7 +33,8 @@ public class BoardCell extends StackPane {
         setFocusTraversable(false);
 
         this.getChildren().addAll(background, content);
-        this.setPrefSize(50, 50);
+
+        this.setClip(new javafx.scene.shape.Rectangle(SIZE, SIZE)); // <-- impede "vazamentos"
         updateContent(initialContent);
     }
 
@@ -34,27 +44,26 @@ public class BoardCell extends StackPane {
     }
 
     private Image getBackgroundImage(PositionContent content) {
-        switch(content) {
-            case SNOW: return ImageUtil.SNOW;
-            case BLOCK: return ImageUtil.BLOCK;
-            default: return ImageUtil.NO_SNOW;
-        }
+        return switch (content) {
+            case SNOW -> ImageUtil.SNOW;
+            case BLOCK -> ImageUtil.BLOCK;
+            default -> ImageUtil.NO_SNOW;
+        };
     }
 
     private Image getContentImage(PositionContent content) {
-        switch(content) {
-            case MONSTER: return ImageUtil.MONSTER;
-            case SNOWBALL: return getSnowballImage();
-            case SNOWMAN: return ImageUtil.SNOWMAN;
-            default: return null;
-        }
+        return switch (content) {
+            case MONSTER -> ImageUtil.MONSTER;
+            case SNOWBALL -> getSnowballImage();
+            case SNOWMAN -> ImageUtil.SNOWMAN;
+            default -> null;
+        };
     }
 
     private Image getSnowballImage() {
         return ImageUtil.SNOWBALL_SMALL;
     }
 
-    // Getters
     public int getRow() { return row; }
     public int getCol() { return col; }
 }

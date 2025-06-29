@@ -1,12 +1,13 @@
-package pt.ipbeja.app.gui;
+package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pt.ipbeja.app.model.BoardModel;
+import pt.ipbeja.estig.po2.snowman.model.BoardModel;
 
 public class Main extends Application {
-    private static final int BOARD_SIZE = 10;
+
+    private static final int BOARD_SIZE = 7;
     private static final int CELL_SIZE = 100;
 
     public static void main(String[] args) {
@@ -25,5 +26,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("A Good Snowman Is Hard To Build");
         primaryStage.show();
+        board.requestFocus();
     }
 }

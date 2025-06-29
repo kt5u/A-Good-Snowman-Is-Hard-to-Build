@@ -1,4 +1,4 @@
-package pt.ipbeja.app.gui;
+package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.scene.image.Image;
 
@@ -17,8 +17,6 @@ public class ImageUtil {
     private static Image loadImage(String filename) {
         return new Image(ImageUtil.class.getResource("/" + filename).toExternalForm());
     }
-
-
 
     private ImageUtil() {}
 }

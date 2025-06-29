@@ -1,6 +1,4 @@
-package pt.ipbeja.app.model;
-
-import javafx.scene.Parent;
+package pt.ipbeja.estig.po2.snowman.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +24,32 @@ public class BoardModel {
         this.rows = rows;
         this.cols = cols;
         this.board = new ArrayList<>();
+        createInitialBoard();
+    }
 
-        for (int r = 0; r < rows; r++) {
-            List<PositionContent> row = new ArrayList<>();
-            for (int c = 0; c < cols; c++) {
-                row.add(PositionContent.NO_SNOW); // Posição inicial vazia
+    // In BoardModel.java, add this method:
+    public void setView(View view) {
+        this.view = view;
+    }
+
+    private void createInitialBoard() {
+        for (int row = 0; row < rows; row++) {
+            List<PositionContent> line = new ArrayList<>();
+            for (int col = 0; col < cols; col++) {
+                // Exemplo: tudo com neve
+                line.add(PositionContent.SNOW);
             }
-            board.add(row);
+            board.add(line);
         }
+
+        // Exemplo: colocar um bloco
+        board.get(1).set(1, PositionContent.BLOCK);
+
+        // Colocar monstro
+        board.get(2).set(2, PositionContent.MONSTER);
+
+        // Colocar bola pequena
+        board.get(3).set(3, PositionContent.SNOWBALL);
     }
 
     /**
@@ -64,13 +80,6 @@ public class BoardModel {
      */
     public boolean isInsideBoard(int row, int col) {
         return row >= 0 && row < rows && col >= 0 && col < cols;
-    }
-
-    /**
-     * Verifica se pode mover para uma posição
-     */
-    public boolean canMove(int row, int col) {
-        return isInsideBoard(row, col) && board.get(row).get(col) == PositionContent.NO_SNOW;
     }
 
     /**

@@ -1,11 +1,16 @@
-package pt.ipbeja.app.model;
+package pt.ipbeja.estig.po2.snowman.model;
 
 public class Snowball extends MobileElement {
 
     public enum SnowballSize {
         SMALL,
-        MEDIUM,
-        LARGE
+        AVERAGE,
+        LARGE,
+        /*
+        BIG-AVERAGE,
+        BIG-SMALL,
+        AVERAGE-SMALL
+         */
     }
 
     private SnowballSize size;
@@ -25,8 +30,8 @@ public class Snowball extends MobileElement {
 
     public void grow() {
         switch (this.size) {
-            case SMALL -> this.size = SnowballSize.MEDIUM;
-            case MEDIUM -> this.size = SnowballSize.LARGE;
+            case SMALL -> this.size = SnowballSize.AVERAGE;
+            case AVERAGE -> this.size = SnowballSize.LARGE;
             case LARGE -> {} // já é o máximo
         }
     }
