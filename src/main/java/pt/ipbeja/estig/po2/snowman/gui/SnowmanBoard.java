@@ -1,6 +1,5 @@
 package pt.ipbeja.estig.po2.snowman.gui;
 
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import pt.ipbeja.estig.po2.snowman.model.BoardModel;
@@ -72,7 +71,6 @@ public class SnowmanBoard extends GridPane implements View {
             boardModel.setContent(monster.getRow(), monster.getCol(), PositionContent.MONSTER);
         }
     }
-
 
     private void createBoard() {
         this.setGridLinesVisible(true);
