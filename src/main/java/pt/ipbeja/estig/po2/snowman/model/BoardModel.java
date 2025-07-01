@@ -268,6 +268,9 @@ public class BoardModel {
     public int getCols() { return this.cols; }
     public int getCurrentLevelNumber() { return levelManager.getCurrentLevelNumber(); }
     public int getTotalLevels() { return levelManager.getTotalLevels(); }
+    public Monster getMonster() {
+        return this.monster;
+    }
 
     /**
      * Sets the view
