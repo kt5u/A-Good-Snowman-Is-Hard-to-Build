@@ -1,42 +1,30 @@
 package pt.ipbeja.estig.po2.snowman.model;
 
 /**
- * Represents the player-controlled monster that moves and pushes snowballs
- *
- * @author [Seu Nome]
- * @author [Número de Aluno]
+ * Represents the player-controlled monster
  */
 public class Monster extends MobileElement {
-
-    private PositionContent originalNewCellContent;
-
-    /**
-     * Possible movement directions including diagonals
-     */
     public enum Direction {
         UP, DOWN, LEFT, RIGHT,
         UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
     }
 
     /**
-     * Creates a monster at specified position
-     * @param row row position
-     * @param col column position
+     * Creates a monster
+     * @param row Starting row
+     * @param col Starting column
      */
     public Monster(int row, int col) {
         super(row, col);
     }
 
     /**
-     * Moves the monster in the specified direction
-     * @param direction direction to move
-     * @param board game board
-     * @return true if movement was successful, false otherwise
+     * Moves the monster
+     * @param direction Movement direction
+     * @param board Game board
+     * @return True if move was successful
      */
     public boolean move(Direction direction, BoardModel board) {
-        assert direction != null : "Direction cannot be null";
-        assert board != null : "BoardModel cannot be null";
-
         int[] newPos = calculateNewPosition(direction);
         int newRow = newPos[0];
         int newCol = newPos[1];
@@ -53,19 +41,19 @@ public class Monster extends MobileElement {
 
         if (target == PositionContent.SNOWBALL) {
             Snowball snowball = board.getSnowballAt(newRow, newCol);
-            if (snowball != null && this.isCombinedSnowball(snowball.getSize())) {
-                return this.unstackSnowballs(board, newRow, newCol, direction);
+            if (snowball != null && isCombinedSnowball(snowball.getSize())) {
+                return unstackSnowballs(board, newRow, newCol, direction);
             }
-            return this.pushSnowball(direction, board, newRow, newCol);
+            return pushSnowball(direction, board, newRow, newCol);
         }
 
-        return this.moveTo(newRow, newCol, board);
+        return moveTo(newRow, newCol, board);
     }
 
     /**
      * Calculates new position based on direction
-     * @param direction movement direction
-     * @return array with new [row, col]
+     * @param direction Movement direction
+     * @return New position [row, col]
      */
     private int[] calculateNewPosition(Direction direction) {
         int newRow = this.row;
@@ -86,22 +74,19 @@ public class Monster extends MobileElement {
     }
 
     /**
-     * Sets monster position
-     * @param row new row
-     * @param col new column
+     * Pushes a snowball
+     * @param direction Push direction
+     * @param board Game board
+     * @param ballRow Snowball row
+     * @param ballCol Snowball column
+     * @return True if push was successful
      */
-    public void setPosition(int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
-
     private boolean pushSnowball(Direction direction, BoardModel board, int ballRow, int ballCol) {
         Snowball snowball = board.getSnowballAt(ballRow, ballCol);
-        if (snowball == null || this.isCombinedSnowball(snowball.getSize())) {
+        if (snowball == null || isCombinedSnowball(snowball.getSize())) {
             return false;
         }
 
-        // CORREÇÃO: Calcular posição de empurrão a partir da bola, não do monstro
         int[] pushPos = calculateNewPosition(direction, ballRow, ballCol);
         int pushRow = pushPos[0];
         int pushCol = pushPos[1];
@@ -117,18 +102,22 @@ public class Monster extends MobileElement {
         }
 
         if (pushTarget == PositionContent.SNOWBALL) {
-            return this.stackSnowballs(board, ballRow, ballCol, pushRow, pushCol, snowball);
+            return stackSnowballs(board, ballRow, ballCol, pushRow, pushCol, snowball);
         }
         else if (pushTarget == PositionContent.SNOW) {
-            return this.growSnowball(board, ballRow, ballCol, pushRow, pushCol, snowball);
+            return growSnowball(board, ballRow, ballCol, pushRow, pushCol, snowball);
         }
         else {
-            return this.moveSnowball(board, ballRow, ballCol, pushRow, pushCol, snowball);
+            return moveSnowball(board, ballRow, ballCol, pushRow, pushCol, snowball);
         }
     }
 
     /**
-     * CORREÇÃO: Método sobrecarregado para calcular posição a partir de qualquer coordenada
+     * Calculates new position from start position
+     * @param direction Movement direction
+     * @param startRow Start row
+     * @param startCol Start column
+     * @return New position [row, col]
      */
     private int[] calculateNewPosition(Direction direction, int startRow, int startCol) {
         int newRow = startRow;
@@ -148,17 +137,23 @@ public class Monster extends MobileElement {
         return new int[]{newRow, newCol};
     }
 
+    /**
+     * Unstacks snowballs
+     * @param board Game board
+     * @param ballRow Snowball row
+     * @param ballCol Snowball column
+     * @param direction Unstack direction
+     * @return True if unstack was successful
+     */
     private boolean unstackSnowballs(BoardModel board, int ballRow, int ballCol, Direction direction) {
         Snowball combinedSnowball = board.getSnowballAt(ballRow, ballCol);
-        if (combinedSnowball == null || !this.isCombinedSnowball(combinedSnowball.getSize())) {
+        if (combinedSnowball == null || !isCombinedSnowball(combinedSnowball.getSize())) {
             return false;
         }
 
-        // Get the smaller component (the one on top)
-        Snowball.SnowballSize smallerSize = this.getSmallerComponent(combinedSnowball.getSize());
-        Snowball.SnowballSize largerSize = this.getLargerComponent(combinedSnowball.getSize());
+        Snowball.SnowballSize smallerSize = getSmallerComponent(combinedSnowball.getSize());
+        Snowball.SnowballSize largerSize = getLargerComponent(combinedSnowball.getSize());
 
-        // Calculate position for the smaller snowball (in push direction)
         int[] smallBallPos = calculateNewPosition(direction, ballRow, ballCol);
         int smallBallRow = smallBallPos[0];
         int smallBallCol = smallBallPos[1];
@@ -172,26 +167,28 @@ public class Monster extends MobileElement {
             return false;
         }
 
-        // Perform unstack:
-        // 1. Remove the combined snowball
         board.removeSnowball(combinedSnowball);
-
-        // 2. Put back the larger snowball in original position
         board.createSnowball(ballRow, ballCol, largerSize);
-
-        // 3. Place the smaller snowball in push direction
         board.createSnowball(smallBallRow, smallBallCol, smallerSize);
-
-        // Monster doesn't move but consumes input
         return true;
     }
 
+    /**
+     * Checks if snowball is combined
+     * @param size Snowball size
+     * @return True if combined
+     */
     private boolean isCombinedSnowball(Snowball.SnowballSize size) {
         return size == Snowball.SnowballSize.BIG_AVERAGE ||
                 size == Snowball.SnowballSize.BIG_SMALL ||
                 size == Snowball.SnowballSize.AVERAGE_SMALL;
     }
 
+    /**
+     * Gets smaller component of combined snowball
+     * @param size Combined size
+     * @return Smaller component size
+     */
     private Snowball.SnowballSize getSmallerComponent(Snowball.SnowballSize size) {
         switch (size) {
             case BIG_AVERAGE: return Snowball.SnowballSize.AVERAGE;
@@ -201,6 +198,11 @@ public class Monster extends MobileElement {
         }
     }
 
+    /**
+     * Gets larger component of combined snowball
+     * @param size Combined size
+     * @return Larger component size
+     */
     private Snowball.SnowballSize getLargerComponent(Snowball.SnowballSize size) {
         switch (size) {
             case BIG_AVERAGE: return Snowball.SnowballSize.LARGE;
@@ -210,39 +212,59 @@ public class Monster extends MobileElement {
         }
     }
 
+    /**
+     * Stacks snowballs
+     * @param board Game board
+     * @param fromRow Source row
+     * @param fromCol Source column
+     * @param toRow Target row
+     * @param toCol Target column
+     * @param snowball1 Snowball to stack
+     * @return True if stack was successful
+     */
     private boolean stackSnowballs(BoardModel board, int fromRow, int fromCol,
                                    int toRow, int toCol, Snowball snowball1) {
         Snowball snowball2 = board.getSnowballAt(toRow, toCol);
         if (snowball2 == null) return false;
 
-        // Only allow stacking if snowball1 is smaller than snowball2
         if (snowball1.getSize().ordinal() >= snowball2.getSize().ordinal()) {
             return false;
         }
 
-        if (this.canCreateSnowman(snowball1, snowball2)) {
+        if (canCreateSnowman(snowball1, snowball2)) {
             board.createSnowman(toRow, toCol);
-            return this.moveTo(fromRow, fromCol, board);
+            return moveTo(fromRow, fromCol, board);
         }
 
-        Snowball.SnowballSize newSize = this.getCombinedSize(snowball1, snowball2);
+        Snowball.SnowballSize newSize = getCombinedSize(snowball1, snowball2);
         if (newSize != null) {
             board.removeSnowball(snowball1);
             board.removeSnowball(snowball2);
             board.createSnowball(toRow, toCol, newSize);
-            return this.moveTo(fromRow, fromCol, board);
+            return moveTo(fromRow, fromCol, board);
         }
 
         return false;
     }
 
+    /**
+     * Checks if snowman can be created
+     * @param s1 First snowball
+     * @param s2 Second snowball
+     * @return True if snowman can be created
+     */
     private boolean canCreateSnowman(Snowball s1, Snowball s2) {
         boolean[] sizes = new boolean[3];
-        this.checkSnowballSize(s1.getSize(), sizes);
-        this.checkSnowballSize(s2.getSize(), sizes);
+        checkSnowballSize(s1.getSize(), sizes);
+        checkSnowballSize(s2.getSize(), sizes);
         return sizes[0] && sizes[1] && sizes[2];
     }
 
+    /**
+     * Checks snowball size components
+     * @param size Snowball size
+     * @param sizes Component flags
+     */
     private void checkSnowballSize(Snowball.SnowballSize size, boolean[] sizes) {
         switch(size) {
             case SMALL: sizes[0] = true; break;
@@ -263,6 +285,12 @@ public class Monster extends MobileElement {
         }
     }
 
+    /**
+     * Gets combined size of two snowballs
+     * @param s1 First snowball
+     * @param s2 Second snowball
+     * @return Combined size
+     */
     private Snowball.SnowballSize getCombinedSize(Snowball s1, Snowball s2) {
         if ((s1.getSize() == Snowball.SnowballSize.SMALL && s2.getSize() == Snowball.SnowballSize.AVERAGE) ||
                 (s1.getSize() == Snowball.SnowballSize.AVERAGE && s2.getSize() == Snowball.SnowballSize.SMALL)) {
@@ -282,51 +310,58 @@ public class Monster extends MobileElement {
         return null;
     }
 
+    /**
+     * Grows snowball on snow
+     * @param board Game board
+     * @param fromRow Source row
+     * @param fromCol Source column
+     * @param toRow Target row
+     * @param toCol Target column
+     * @param snowball Snowball to grow
+     * @return True if growth was successful
+     */
     private boolean growSnowball(BoardModel board, int fromRow, int fromCol,
                                  int toRow, int toCol, Snowball snowball) {
-        // Só cresce se não for uma bola de neve grande
         if (snowball.getSize() != Snowball.SnowballSize.LARGE) {
             snowball.grow(null);
-
-            // Remove a neve (altera o conteúdo base para NO_SNOW)
             board.setBaseContent(toRow, toCol, PositionContent.NO_SNOW);
         }
-        return this.moveSnowball(board, fromRow, fromCol, toRow, toCol, snowball);
+        return moveSnowball(board, fromRow, fromCol, toRow, toCol, snowball);
     }
 
+    /**
+     * Moves a snowball
+     * @param board Game board
+     * @param fromRow Source row
+     * @param fromCol Source column
+     * @param toRow Target row
+     * @param toCol Target column
+     * @param snowball Snowball to move
+     * @return True if move was successful
+     */
     private boolean moveSnowball(BoardModel board, int fromRow, int fromCol,
                                  int toRow, int toCol, Snowball snowball) {
         snowball.setPosition(toRow, toCol);
         board.setContent(fromRow, fromCol, board.getBaseContent(fromRow, fromCol));
         board.setContent(toRow, toCol, PositionContent.SNOWBALL);
-        return this.moveTo(fromRow, fromCol, board);
+        return moveTo(fromRow, fromCol, board);
     }
 
+    /**
+     * Moves monster to position
+     * @param newRow Target row
+     * @param newCol Target column
+     * @param board Game board
+     * @return True if move was successful
+     */
     private boolean moveTo(int newRow, int newCol, BoardModel board) {
-        // Salva o conteúdo original da célula atual
         PositionContent currentContent = board.getContent(this.row, this.col);
-        PositionContent restoreContent = currentContent;
+        PositionContent restoreContent = currentContent == PositionContent.MONSTER ?
+                board.getBaseContent(this.row, this.col) : currentContent;
 
-        // Se o monstro está sobre neve, mantemos a neve
-        if (currentContent != PositionContent.MONSTER) {
-            restoreContent = currentContent;
-        } else {
-            // Se já era monstro, restaura o conteúdo base
-            restoreContent = board.getBaseContent(this.row, this.col);
-        }
-
-        // Restaura o conteúdo da célula atual
         board.setContent(this.row, this.col, restoreContent);
-
-        // Atualiza a posição do monstro
         this.row = newRow;
         this.col = newCol;
-
-        // Salva o conteúdo original da nova célula
-        PositionContent newCellContent = board.getContent(newRow, newCol);
-        this.originalNewCellContent = newCellContent;
-
-        // Coloca o monstro na nova célula, preservando o estado base
         board.setContent(newRow, newCol, PositionContent.MONSTER);
         return true;
     }

@@ -21,9 +21,15 @@ public class ImageUtil {
     public static final Image BLOCK = loadImage("images/block.jpg");
     public static final Image NO_SNOW = loadImage("images/ground.jpg");
 
+    /**
+     * Loads an image from the resources folder
+     * @param filename The image filename
+     * @return The loaded image
+     */
     private static Image loadImage(String filename) {
         return new Image(ImageUtil.class.getResource("/" + filename).toExternalForm());
     }
 
+    // Prevent instantiation
     private ImageUtil() {}
 }

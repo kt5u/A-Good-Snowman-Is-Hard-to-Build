@@ -13,6 +13,9 @@ import pt.ipbeja.estig.po2.snowman.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Game board GUI component
+ */
 public class SnowmanBoard extends GridPane implements View {
     private final BoardModel boardModel;
     private BoardCell[][] cells;
@@ -23,6 +26,11 @@ public class SnowmanBoard extends GridPane implements View {
     private int replayIndex;
     private boolean isReplaying = false;
 
+    /**
+     * Creates the game board
+     * @param boardModel The board model
+     * @param mainApp The main application
+     */
     public SnowmanBoard(BoardModel boardModel, Main mainApp) {
         this.boardModel = boardModel;
         this.mainApp = mainApp;
@@ -32,11 +40,13 @@ public class SnowmanBoard extends GridPane implements View {
 
         this.createBoard();
         this.setupKeyHandlers();
-
         this.setFocusTraversable(true);
         this.setOnMouseClicked(e -> this.requestFocus());
     }
 
+    /**
+     * Sets up keyboard handlers for movement
+     */
     private void setupKeyHandlers() {
         this.setOnKeyPressed(event -> {
             if (isReplaying) return;
@@ -70,6 +80,14 @@ public class SnowmanBoard extends GridPane implements View {
         });
     }
 
+    /**
+     * Logs a player move
+     * @param oldRow Starting row
+     * @param oldCol Starting column
+     * @param newRow Ending row
+     * @param newCol Ending column
+     * @param direction Move direction
+     */
     private void logMove(int oldRow, int oldCol, int newRow, int newCol, Monster.Direction direction) {
         String move = String.format("(%d, %c) → (%d, %c)",
                 oldRow + 1,
@@ -82,6 +100,9 @@ public class SnowmanBoard extends GridPane implements View {
         mainApp.addMove(move);
     }
 
+    /**
+     * Creates the game board GUI
+     */
     private void createBoard() {
         this.setGridLinesVisible(true);
 
@@ -99,6 +120,11 @@ public class SnowmanBoard extends GridPane implements View {
         this.updateCell(row, col);
     }
 
+    /**
+     * Updates a specific cell
+     * @param row Cell row
+     * @param col Cell column
+     */
     public void updateCell(int row, int col) {
         BoardCell cell = this.cells[row][col];
         if (cell != null) {
@@ -148,13 +174,15 @@ public class SnowmanBoard extends GridPane implements View {
         }
     }
 
+    /**
+     * Starts replaying the level
+     */
     private void startReplay() {
         if (replayTimeline != null) {
             replayTimeline.stop();
         }
 
         this.resetGameForReplay();
-
         replayIndex = 0;
         isReplaying = true;
         mainApp.clearMoves();
@@ -167,6 +195,9 @@ public class SnowmanBoard extends GridPane implements View {
         replayTimeline.play();
     }
 
+    /**
+     * Plays the next move in the replay sequence
+     */
     private void playNextMove() {
         if (replayIndex < moveSequence.size()) {
             Monster.Direction dir = moveSequence.get(replayIndex);
@@ -184,6 +215,9 @@ public class SnowmanBoard extends GridPane implements View {
         }
     }
 
+    /**
+     * Resets the game for replay
+     */
     private void resetGameForReplay() {
         movesHistory.clear();
         mainApp.clearMoves();
@@ -191,6 +225,9 @@ public class SnowmanBoard extends GridPane implements View {
         recreateBoard();
     }
 
+    /**
+     * Advances to the next level
+     */
     private void nextLevel() {
         this.movesHistory.clear();
         this.moveSequence.clear();
@@ -199,14 +236,13 @@ public class SnowmanBoard extends GridPane implements View {
         this.recreateBoard();
     }
 
+    /**
+     * Recreates the game board GUI
+     */
     private void recreateBoard() {
-        // Limpa completamente o grid
         this.getChildren().clear();
-
-        // Recria o array de células
         this.cells = new BoardCell[boardModel.getRows()][boardModel.getCols()];
 
-        // Recria as células visuais
         for (int row = 0; row < this.boardModel.getRows(); row++) {
             for (int col = 0; col < this.boardModel.getCols(); col++) {
                 BoardCell cell = new BoardCell(row, col, this.boardModel);
@@ -214,16 +250,12 @@ public class SnowmanBoard extends GridPane implements View {
                 this.add(cell, col, row);
             }
         }
-
-        // CORREÇÃO FINAL: Forçar atualização de todas as células
-        for (int row = 0; row < this.boardModel.getRows(); row++) {
-            for (int col = 0; col < this.boardModel.getCols(); col++) {
-                this.updateCell(row, col);
-            }
-        }
     }
 
-    private void resetGame() {
+    /**
+     * Resets the current level
+     */
+    public void resetGame() {
         this.movesHistory.clear();
         this.moveSequence.clear();
         this.mainApp.clearMoves();

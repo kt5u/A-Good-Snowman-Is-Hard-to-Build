@@ -1,10 +1,7 @@
 package pt.ipbeja.estig.po2.snowman.model;
 
 /**
- * Represents the possible contents of a board position
- *
- * @author Denis Cicau 25442
- * @author Ângelo Teresa 25441
+ * Represents possible board position contents
  */
 public enum PositionContent {
     NO_SNOW,    // Empty ground without snow

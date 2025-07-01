@@ -1,16 +1,9 @@
 package pt.ipbeja.estig.po2.snowman.model;
 
 /**
- * Represents a snowball with different size states
- *
- * @author Denis Cicau 25442
- * @author Ângelo Teresa 25441
+ * Represents a snowball
  */
 public class Snowball extends MobileElement {
-
-    /**
-     * Possible snowball sizes and combinations
-     */
     public enum SnowballSize {
         SMALL,          // Small snowball
         AVERAGE,        // Medium snowball
@@ -23,40 +16,46 @@ public class Snowball extends MobileElement {
     private SnowballSize size;
 
     /**
-     * Creates a snowball at specified position and size
+     * Creates a snowball
+     * @param row Row position
+     * @param col Column position
+     * @param size Snowball size
      */
     public Snowball(int row, int col, SnowballSize size) {
         super(row, col);
         this.size = size;
     }
 
+    /**
+     * Gets snowball size
+     * @return Snowball size
+     */
     public SnowballSize getSize() {
         return size;
     }
 
     /**
-     * Grows the snowball when pushed onto snow or combines with another snowball
-     * @param otherSize size of other snowball when stacking, null when growing on snow
+     * Grows the snowball
+     * @param otherSize Other snowball size (null for snow)
      */
     public void grow(SnowballSize otherSize) {
         if (otherSize == null) {
-            // Normal growth when pushed onto snow
             switch (this.size) {
                 case SMALL: this.size = SnowballSize.AVERAGE; break;
                 case AVERAGE: this.size = SnowballSize.LARGE; break;
-                // LARGE and composites don't grow further
             }
         } else {
-            // Stacking with another snowball
             this.size = combineSizes(this.size, otherSize);
         }
     }
 
     /**
      * Combines two snowball sizes
+     * @param size1 First size
+     * @param size2 Second size
+     * @return Combined size
      */
     private SnowballSize combineSizes(SnowballSize size1, SnowballSize size2) {
-        // Order sizes to simplify combinations
         if (size1.ordinal() < size2.ordinal()) {
             SnowballSize temp = size1;
             size1 = size2;
@@ -76,31 +75,10 @@ public class Snowball extends MobileElement {
     }
 
     /**
-     * Returns the smaller size when this is a combined snowball
-     * @return the smaller size or null if not a combined snowball
+     * Sets snowball position
+     * @param row New row
+     * @param col New column
      */
-    public SnowballSize getSmallerSize() {
-        return switch (this.size) {
-            case BIG_AVERAGE -> SnowballSize.AVERAGE;
-            case BIG_SMALL -> SnowballSize.SMALL;
-            case AVERAGE_SMALL -> SnowballSize.SMALL;
-            default -> null;
-        };
-    }
-
-    /**
-     * Returns the larger size when this is a combined snowball
-     * @return the larger size or null if not a combined snowball
-     */
-    public SnowballSize getLargerSize() {
-        return switch (this.size) {
-            case BIG_AVERAGE -> SnowballSize.LARGE;
-            case BIG_SMALL -> SnowballSize.LARGE;
-            case AVERAGE_SMALL -> SnowballSize.AVERAGE;
-            default -> null;
-        };
-    }
-
     public void setPosition(int row, int col) {
         this.row = row;
         this.col = col;

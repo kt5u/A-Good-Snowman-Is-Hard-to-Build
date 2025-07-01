@@ -1,12 +1,19 @@
 package pt.ipbeja.estig.po2.snowman.model;
 
 /**
- * Interface for views to observe the board model
- *
- * @author Denis Cicau 25442
- * @author Ângelo Teresa 25441
+ * View interface for game board
  */
 public interface View {
+    /**
+     * Called when board changes
+     * @param row Changed row
+     * @param col Changed column
+     * @param content New content
+     */
     void onBoardChanged(int row, int col, PositionContent content);
+
+    /**
+     * Shows win dialog
+     */
     void showWinDialog();
 }

@@ -7,15 +7,11 @@ import pt.ipbeja.estig.po2.snowman.model.BoardModel;
 import pt.ipbeja.estig.po2.snowman.model.PositionContent;
 import pt.ipbeja.estig.po2.snowman.model.Snowball;
 
-
 /**
  * Represents a single cell on the game board
  *
  * @author Denis Cicau 25442
  * @author Ângelo Teresa 25441
- */
-/**
- * Represents a single cell on the game board
  */
 public class BoardCell extends StackPane {
     public static final int CELL_SIZE = 100;
@@ -41,23 +37,31 @@ public class BoardCell extends StackPane {
         this.update();
     }
 
+    /**
+     * Configures the image view properties
+     */
     private void setupImageView() {
         imageView.setFitWidth(CELL_SIZE);
         imageView.setFitHeight(CELL_SIZE);
         this.getChildren().add(imageView);
     }
 
+    /**
+     * Configures the cell appearance
+     */
     private void setupCellAppearance() {
         setMinSize(CELL_SIZE, CELL_SIZE);
         setMaxSize(CELL_SIZE, CELL_SIZE);
         setStyle("-fx-background-color: transparent;");
     }
 
+    /**
+     * Updates the cell content based on the board state
+     */
     public void update() {
         PositionContent content = boardModel.getContent(row, col);
         PositionContent baseContent = boardModel.getBaseContent(row, col);
 
-        // Mostra monstro/bola de neve/boneco por cima do conteúdo base
         if (content == PositionContent.MONSTER ||
                 content == PositionContent.SNOWBALL ||
                 content == PositionContent.SNOWMAN) {
@@ -67,6 +71,11 @@ public class BoardCell extends StackPane {
         }
     }
 
+    /**
+     * Gets the corresponding image for a position content
+     * @param content The content type
+     * @return The corresponding image
+     */
     private Image getImageForContent(PositionContent content) {
         if (content == null) return ImageUtil.NO_SNOW;
 
@@ -81,6 +90,10 @@ public class BoardCell extends StackPane {
         }
     }
 
+    /**
+     * Gets the specific snowball image based on its size
+     * @return The snowball image
+     */
     private Image getSnowballImage() {
         Snowball snowball = boardModel.getSnowballAt(row, col);
         if (snowball == null) return null;
